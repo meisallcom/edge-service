@@ -19,6 +19,13 @@ spring:
           max-idle-time: 15s
           max-life-time: 60s
       default-filters:
+        - SaveSession
+        - name: RequestRateLimiter
+          args:
+            redis-rate-limiter:
+              replenishRate: 10
+              burstCapacity: 20
+              requestedTokens: 1
         - name: Retry
           args:
             retries: 3
@@ -48,6 +55,17 @@ spring:
             - name: CircuitBreaker
               args:
                 name: orderCircuitBreaker
+  data:
+    redis:
+      connect-timeout: 2s
+      host: localhost
+      port: 6379
+      timeout: 1s
+  session:
+    timeout: 10m
+    redis:
+      namespace: polar:edge
+
 resilience4j:
   circuitbreaker:
     configs:
